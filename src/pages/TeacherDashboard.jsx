@@ -13,8 +13,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import ShareFormButton from '@/components/ShareFormButton';
 
 export default function TeacherDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
