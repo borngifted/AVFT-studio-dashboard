@@ -117,9 +117,7 @@ export default function TeacherDashboard() {
             <p className="text-slate-500">AVTF Student Data Collection Overview</p>
           </div>
           <div className="flex gap-3">
-            <Link to={createPageUrl('StudentForm')}>
-              <Button variant="outline">View Student Form</Button>
-            </Link>
+            <ShareFormButton />
             <Button onClick={exportToCSV} className="bg-indigo-600 hover:bg-indigo-700">
               <Download className="w-4 h-4 mr-2" />
               Export CSV

@@ -14,6 +14,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 import ReturnCodeDisplay from '@/components/pass/ReturnCodeDisplay';
+import ShareFormButton from '@/components/ShareFormButton';
 import { toast } from 'sonner';
 
 export default function PassDashboard() {
@@ -161,6 +162,7 @@ export default function PassDashboard() {
             <p className="text-slate-500">AVTF Digital Pass System</p>
           </div>
           <div className="flex gap-3">
+            <ShareFormButton />
             <Button onClick={exportPassData} variant="outline">
               <Download className="w-4 h-4 mr-2" />
               Export CSV
