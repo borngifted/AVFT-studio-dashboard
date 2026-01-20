@@ -8,10 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { 
   LogOut, LogIn, DoorOpen, AlertCircle, CheckCircle, 
-  Award, ShoppingCart, Ticket, TrendingUp 
+  Award, ShoppingCart, Ticket, TrendingUp, Settings 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import PassTimer from '@/components/pass/PassTimer';
 import { generateCode } from '@/components/pass/ReturnCodeDisplay';
 
@@ -62,6 +64,16 @@ export default function StudentPass() {
   });
 
   const activePass = activeSessions[0] || null;
+
+  // Get notification settings
+  const { data: notificationSettings } = useQuery({
+    queryKey: ['notification-settings', user?.email],
+    queryFn: async () => {
+      const all = await base44.entities.NotificationSettings.filter({ student_email: user.email });
+      return all[0] || null;
+    },
+    enabled: !!user
+  });
 
   // Start pass mutation
   const startPass = useMutation({
@@ -194,9 +206,16 @@ export default function StudentPass() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50/30 p-4">
       <div className="max-w-md mx-auto py-8">
         {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-slate-800">Digital Hall Pass</h1>
-          <p className="text-slate-500">AVTF Classroom</p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800">Digital Hall Pass</h1>
+            <p className="text-slate-500">AVTF Classroom</p>
+          </div>
+          <Link to={createPageUrl('NotificationSettings')}>
+            <Button variant="ghost" size="icon">
+              <Settings className="w-5 h-5 text-slate-500" />
+            </Button>
+          </Link>
         </div>
 
         {/* Pass Balance Card */}
@@ -244,8 +263,35 @@ export default function StudentPass() {
 
                   <PassTimer 
                     startTime={activePass.start_time}
-                    onTimeWarning={() => toast('⏰ 2 minutes remaining!', { duration: 5000 })}
-                    onOvertime={() => toast.error('⚠️ Please return to class now!', { duration: 10000 })}
+                    customReminderMinutes={notificationSettings?.custom_reminder_minutes || 8}
+                    enableSoundAlerts={notificationSettings?.enable_sound_alerts ?? true}
+                    onTimeWarning={() => {
+                      const message = `⏰ Time to return to class!`;
+                      toast(message, { duration: 5000 });
+                      
+                      // Push notification if enabled
+                      if (notificationSettings?.enable_push_notifications && 'Notification' in window && Notification.permission === 'granted') {
+                        new Notification('AVTF Pass Reminder', {
+                          body: message,
+                          icon: '/icon-192.png',
+                          tag: 'pass-reminder'
+                        });
+                      }
+                    }}
+                    onOvertime={() => {
+                      const message = '⚠️ Please return to class now!';
+                      toast.error(message, { duration: 10000 });
+                      
+                      // Push notification if enabled
+                      if (notificationSettings?.enable_push_notifications && 'Notification' in window && Notification.permission === 'granted') {
+                        new Notification('AVTF Pass Overtime', {
+                          body: message,
+                          icon: '/icon-192.png',
+                          tag: 'pass-overtime',
+                          requireInteraction: true
+                        });
+                      }
+                    }}
                   />
 
                   <div className="space-y-3 pt-4 border-t">
