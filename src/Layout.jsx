@@ -50,7 +50,8 @@ export default function Layout({ children, currentPageName }) {
   const navigation = [
     { name: 'Pass Dashboard', page: 'PassDashboard', icon: DoorOpen, adminOnly: false },
     { name: 'Teacher Dashboard', page: 'TeacherDashboard', icon: LayoutDashboard, adminOnly: false },
-    { name: 'Student Form', page: 'StudentForm', icon: FileText, adminOnly: false },
+    { name: 'Analytics', page: 'PassAnalytics', icon: LayoutDashboard, adminOnly: false },
+    { name: 'Monthly Reports', page: 'MonthlyReports', icon: FileText, adminOnly: true },
   ];
 
   const visibleNav = navigation.filter(item => !item.adminOnly || isAdmin);
