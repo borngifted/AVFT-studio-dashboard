@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, AlertCircle } from 'lucide-react';
 
-export default function PassTimer({ startTime, onTimeWarning, onOvertime }) {
+export default function PassTimer({ startTime, customReminderMinutes = 8, enableSoundAlerts = true, onTimeWarning, onOvertime }) {
   const [elapsed, setElapsed] = useState(0);
   const [warned, setWarned] = useState(false);
   const [overtime, setOvertime] = useState(false);
@@ -14,21 +14,34 @@ export default function PassTimer({ startTime, onTimeWarning, onOvertime }) {
       const elapsedSeconds = Math.floor((now - start) / 1000);
       setElapsed(elapsedSeconds);
 
-      // Warning at 8 minutes
-      if (elapsedSeconds >= 480 && !warned) {
+      // Custom reminder warning
+      const reminderSeconds = customReminderMinutes * 60;
+      if (elapsedSeconds >= reminderSeconds && !warned) {
         setWarned(true);
         onTimeWarning?.();
+        
+        // Sound alert
+        if (enableSoundAlerts) {
+          const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjGH0fPTgjMGHm7A7+OZQQ8PVqvn77BcGAg+ltryxHMnBSl+zPLaizsIGGS57OihUhELTKXh8bllHAU2jdXxxn0pBSp6y/HajDwJF2G56+mjTxELSKDf8bhoHgU0iNPxxoE0CAVquuvnpl8RCUCa3vLCciYELIHO8diJOAgZaLvt559NEAxPqOPwtmQcBjiP1/PMeS0GI3fH8N2RQAoUXrTp66hVFApGn+DyvmwhBjGH0fPTgjMGHm7A7+OZQQ8PVqvn77BcGAg+ltryxHMnBSl+zPLaizsIGGS57OihUhELTKXh8bllHAU2jdXxxn0pBSp6y/HajDwJF2G56+mjTxELSKDf8bhoHgU0iNPxxoE0CAVquuvnpl8RCUCa3vLCciYELIHO8diJOAgZaLvt559NEAxPqOPwtmQcBjiP1/PMeS0GI3fH8N2RQAoUXrTp66hVFApGn+DyvmwhBjGH0fPTgjMGHm7A7+OZQQ8PVqvn77BcGAg+ltryxHMnBSl+zPLaizsIGGS57OihUhELTKXh8bllHAU2jdXxxn0pBSp6y/HajDwJF2G56+mjTxELSKDf8bhoHgU0iNPxxoE0CAVquuvnpl8RCUCa3vLCciYELIHO8diJOAgZaLvt559NEAxPqOPwtmQcBjiP1/PMeS0GI3fH8N2RQAoUXrTp66hVFApGn+DyvmwhBjGH0fPTgjMGHm7A7+OZQQ8PVqvn77BcGAg+ltryxHMnBSl+zPLaizsIGGS57OihUhELTKXh8bllHAU2jdXxxn0pBSp6y/HajDwJF2G56+mjTxELSKDf8bhoHgU0iNPxxoE0CAVquuvnpl8RCUCa3vLCciYELIHO8diJOAgZaLvt559NEAxPqOPwtmQcBjiP1/PMeS0GI3fH8N2RQAo=');
+          audio.play().catch(() => {});
+        }
       }
 
       // Overtime at 10 minutes
       if (elapsedSeconds >= 600 && !overtime) {
         setOvertime(true);
         onOvertime?.();
+        
+        // Sound alert for overtime
+        if (enableSoundAlerts) {
+          const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjGH0fPTgjMGHm7A7+OZQQ8PVqvn77BcGAg+ltryxHMnBSl+zPLaizsIGGS57OihUhELTKXh8bllHAU2jdXxxn0pBSp6y/HajDwJF2G56+mjTxELSKDf8bhoHgU0iNPxxoE0CAVquuvnpl8RCUCa3vLCciYELIHO8diJOAgZaLvt559NEAxPqOPwtmQcBjiP1/PMeS0GI3fH8N2RQAoUXrTp66hVFApGn+DyvmwhBjGH0fPTgjMGHm7A7+OZQQ8PVqvn77BcGAg+ltryxHMnBSl+zPLaizsIGGS57OihUhELTKXh8bllHAU2jdXxxn0pBSp6y/HajDwJF2G56+mjTxELSKDf8bhoHgU0iNPxxoE0CAVquuvnpl8RCUCa3vLCciYELIHO8diJOAgZaLvt559NEAxPqOPwtmQcBjiP1/PMeS0GI3fH8N2RQAo=');
+          audio.play().catch(() => {});
+        }
       }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [startTime, warned, overtime, onTimeWarning, onOvertime]);
+  }, [startTime, customReminderMinutes, enableSoundAlerts, warned, overtime, onTimeWarning, onOvertime]);
 
   const minutes = Math.floor(elapsed / 60);
   const seconds = elapsed % 60;
