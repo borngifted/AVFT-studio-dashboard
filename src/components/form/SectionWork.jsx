@@ -66,7 +66,7 @@ export default function SectionWork({ data, onChange }) {
                 >
                   {[
                     { value: 'No', label: 'No, I manage it well', emoji: '✅' },
-                    { value: 'Sometimes', label: 'Sometimes it's challenging', emoji: '⚖️' },
+                    { value: 'Sometimes', label: "Sometimes it's challenging", emoji: '⚖️' },
                     { value: 'Often', label: 'Often difficult to balance', emoji: '😓' }
                   ].map((option) => (
                     <Label
