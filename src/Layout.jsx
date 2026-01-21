@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
-  LayoutDashboard, FileText, DoorOpen, Users, LogOut, Menu, X 
+  LayoutDashboard, FileText, DoorOpen, Users, LogOut, Menu, X, TrendingUp 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import InstallPrompt from '@/components/InstallPrompt';
@@ -48,9 +48,10 @@ export default function Layout({ children, currentPageName }) {
   const isAdmin = user.role === 'admin';
 
   const navigation = [
+    { name: 'Home', page: 'Home', icon: LayoutDashboard, adminOnly: false },
     { name: 'Pass Dashboard', page: 'PassDashboard', icon: DoorOpen, adminOnly: false },
-    { name: 'Teacher Dashboard', page: 'TeacherDashboard', icon: LayoutDashboard, adminOnly: false },
-    { name: 'Analytics', page: 'PassAnalytics', icon: LayoutDashboard, adminOnly: false },
+    { name: 'Teacher Dashboard', page: 'TeacherDashboard', icon: Users, adminOnly: false },
+    { name: 'Analytics', page: 'PassAnalytics', icon: TrendingUp, adminOnly: false },
     { name: 'Monthly Reports', page: 'MonthlyReports', icon: FileText, adminOnly: true },
   ];
 
