@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
@@ -6,22 +6,31 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Search, Filter, Download, Users, Smartphone, Laptop, Briefcase, 
   CheckCircle, Clock, AlertTriangle, ChevronDown, ChevronUp, 
-  Youtube, Instagram, Eye
+  Youtube, Instagram, Eye, FileText, Bot, Calendar
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import ShareFormButton from '@/components/ShareFormButton';
+import CustomReports from '@/components/teacher/CustomReports';
+import PreAssignedPasses from '@/components/teacher/PreAssignedPasses';
+import AIAssistant from '@/components/teacher/AIAssistant';
 
 export default function TeacherDashboard() {
+  const [user, setUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBlock, setFilterBlock] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [expandedId, setExpandedId] = useState(null);
 
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => {});
+  }, []);
 
   const { data: submissions = [], isLoading } = useQuery({
     queryKey: ['submissions'],
@@ -113,16 +122,38 @@ export default function TeacherDashboard() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">Teacher Dashboard</h1>
-            <p className="text-slate-500">AVTF Student Data Collection Overview</p>
+            <p className="text-slate-500">Student Data & Pass Management</p>
           </div>
-          <div className="flex gap-3">
-            <ShareFormButton />
-            <Button onClick={exportToCSV} className="bg-indigo-600 hover:bg-indigo-700">
-              <Download className="w-4 h-4 mr-2" />
-              Export CSV
-            </Button>
-          </div>
+          <ShareFormButton />
         </div>
+
+        <Tabs defaultValue="submissions" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+            <TabsTrigger value="submissions" className="gap-2">
+              <Users className="w-4 h-4" />
+              Submissions
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="gap-2">
+              <FileText className="w-4 h-4" />
+              Reports
+            </TabsTrigger>
+            <TabsTrigger value="preassigned" className="gap-2">
+              <Calendar className="w-4 h-4" />
+              Pre-Assigned
+            </TabsTrigger>
+            <TabsTrigger value="ai" className="gap-2">
+              <Bot className="w-4 h-4" />
+              AI Assistant
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="submissions" className="space-y-6">
+            <div className="flex gap-3">
+              <Button onClick={exportToCSV} className="bg-indigo-600 hover:bg-indigo-700">
+                <Download className="w-4 h-4 mr-2" />
+                Export CSV
+              </Button>
+            </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
@@ -442,6 +473,20 @@ export default function TeacherDashboard() {
             ))}
           </div>
         )}
+          </TabsContent>
+
+          <TabsContent value="reports">
+            <CustomReports />
+          </TabsContent>
+
+          <TabsContent value="preassigned">
+            <PreAssignedPasses user={user} />
+          </TabsContent>
+
+          <TabsContent value="ai">
+            <AIAssistant />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
