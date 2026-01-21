@@ -16,6 +16,13 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
+  // Redirect to Home if no specific page
+  useEffect(() => {
+    if (user && !currentPageName) {
+      window.location.href = createPageUrl('Home');
+    }
+  }, [user, currentPageName]);
+
   // Public pages that don't need auth
   const publicPages = ['StudentForm', 'StudentPass'];
   const isPublicPage = publicPages.includes(currentPageName);
