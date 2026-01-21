@@ -52,6 +52,20 @@ export default function StudentPass() {
     enabled: !!user
   });
 
+  // Get pre-assigned passes
+  const { data: preAssignedPasses = [] } = useQuery({
+    queryKey: ['pre-assigned', user?.email],
+    queryFn: async () => {
+      const today = new Date().toISOString().split('T')[0];
+      return base44.entities.PreAssignedPass.filter({
+        student_email: user.email,
+        status: 'approved',
+        scheduled_date: today
+      });
+    },
+    enabled: !!user
+  });
+
   // Get active pass session
   const { data: activeSessions = [] } = useQuery({
     queryKey: ['activePasses', user?.email],
@@ -77,10 +91,10 @@ export default function StudentPass() {
 
   // Start pass mutation
   const startPass = useMutation({
-    mutationFn: async (dest) => {
+    mutationFn: async ({ dest, preAssignedId }) => {
       const remaining = (passData.monthly_pass_allowance + passData.purchased_passes_this_month) - passData.passes_used_this_month;
       
-      if (remaining <= 0) {
+      if (!preAssignedId && remaining <= 0) {
         throw new Error('No passes remaining');
       }
 
@@ -92,15 +106,26 @@ export default function StudentPass() {
         status: 'OPEN'
       });
 
-      await base44.entities.StudentPassData.update(passData.id, {
-        passes_used_this_month: passData.passes_used_this_month + 1
-      });
+      // If using pre-assigned pass, mark it as used
+      if (preAssignedId) {
+        await base44.entities.PreAssignedPass.update(preAssignedId, {
+          status: 'used',
+          used_at: new Date().toISOString(),
+          pass_session_id: session.id
+        });
+      } else {
+        // Regular pass - increment counter
+        await base44.entities.StudentPassData.update(passData.id, {
+          passes_used_this_month: passData.passes_used_this_month + 1
+        });
+      }
 
       return session;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activePasses'] });
       queryClient.invalidateQueries({ queryKey: ['passData'] });
+      queryClient.invalidateQueries({ queryKey: ['pre-assigned'] });
       setDestination('');
       toast.success('Pass started! Return within 10 minutes.');
     },
@@ -217,6 +242,35 @@ export default function StudentPass() {
             </Button>
           </Link>
         </div>
+
+        {/* Pre-Assigned Passes */}
+        {preAssignedPasses.length > 0 && (
+          <Card className="mb-6 bg-gradient-to-br from-green-500 to-emerald-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <CheckCircle className="w-5 h-5" />
+                <span className="font-medium">Pre-Approved Passes Today</span>
+              </div>
+              <div className="space-y-2">
+                {preAssignedPasses.map(pass => (
+                  <button
+                    key={pass.id}
+                    onClick={() => startPass.mutate({ dest: pass.destination, preAssignedId: pass.id })}
+                    className="w-full text-left p-3 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+                  >
+                    <p className="font-medium">{pass.destination}</p>
+                    {pass.scheduled_time && (
+                      <p className="text-sm opacity-90">Scheduled: {pass.scheduled_time}</p>
+                    )}
+                    {pass.reason && (
+                      <p className="text-xs opacity-80">{pass.reason}</p>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Pass Balance Card */}
         <Card className="mb-6 bg-gradient-to-br from-indigo-500 to-violet-600 text-white">
@@ -355,7 +409,7 @@ export default function StudentPass() {
                       </div>
 
                       <Button
-                        onClick={() => startPass.mutate(destination)}
+                        onClick={() => startPass.mutate({ dest: destination })}
                         disabled={!destination || startPass.isPending}
                         className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-lg"
                       >
