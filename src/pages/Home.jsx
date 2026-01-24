@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { 
-  DoorOpen, LayoutDashboard, TrendingUp, FileText, 
-  Award, Clock, Users, ChevronRight 
+  Clock, Mail, AlertCircle, GraduationCap, ChevronRight, 
+  Send, MessageSquare
 } from 'lucide-react';
 
 export default function Home() {
@@ -18,19 +18,13 @@ export default function Home() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-violet-600 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center mx-auto mb-4">
-              <DoorOpen className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-slate-800 mb-2">AVTF Management</h1>
-            <p className="text-slate-600 mb-6">Digital Pass & Student Management System</p>
-            <Button 
-              onClick={() => base44.auth.redirectToLogin()}
-              className="w-full h-12 bg-indigo-600 hover:bg-indigo-700"
-            >
-              Sign In to Continue
+            <h1 className="text-2xl font-bold text-slate-800 mb-4">TeachersPet 🐾</h1>
+            <p className="text-slate-500 mb-6">Please log in to continue</p>
+            <Button onClick={() => base44.auth.redirectToLogin()}>
+              Log In
             </Button>
           </CardContent>
         </Card>
@@ -38,138 +32,144 @@ export default function Home() {
     );
   }
 
-  const isAdmin = user.role === 'admin';
-
-  const quickLinks = [
-    {
-      title: 'Pass Dashboard',
-      description: 'Monitor active passes and student activity',
-      icon: DoorOpen,
-      page: 'PassDashboard',
-      color: 'from-indigo-500 to-violet-500',
-      adminOnly: false
-    },
-    {
-      title: 'Teacher Dashboard',
-      description: 'View and manage student submissions',
-      icon: Users,
-      page: 'TeacherDashboard',
-      color: 'from-blue-500 to-cyan-500',
-      adminOnly: false
-    },
-    {
-      title: 'Analytics',
-      description: 'Insights and trends for pass usage',
-      icon: TrendingUp,
-      page: 'PassAnalytics',
-      color: 'from-purple-500 to-pink-500',
-      adminOnly: false
-    },
-    {
-      title: 'Monthly Reports',
-      description: 'Automated monthly summaries and metrics',
-      icon: FileText,
-      page: 'MonthlyReports',
-      color: 'from-amber-500 to-orange-500',
-      adminOnly: true
-    }
-  ];
-
-  const visibleLinks = quickLinks.filter(link => !link.adminOnly || isAdmin);
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50/30">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-violet-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 py-16">
-          <div className="text-center">
-            <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-6">
-              <DoorOpen className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Welcome to AVTF Management
-            </h1>
-            <p className="text-xl text-indigo-100 mb-2">
-              Digital Pass & Student Management System
-            </p>
-            <p className="text-sm text-indigo-200">
-              Signed in as <span className="font-semibold">{user.full_name}</span>
-              {isAdmin && <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs">Admin</span>}
-            </p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">Home</h1>
+          <p className="text-slate-600">Welcome back, {user.full_name}!</p>
         </div>
-      </div>
 
-      {/* Quick Links */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold text-slate-800 mb-6">Quick Access</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {visibleLinks.map((link) => {
-            const Icon = link.icon;
-            return (
-              <Link key={link.page} to={createPageUrl(link.page)}>
-                <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer border-2 hover:border-indigo-200">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${link.color} flex items-center justify-center mb-4`}>
-                        <Icon className="w-6 h-6 text-white" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="space-y-6">
+            {/* Time Saved Card */}
+            <Card className="bg-gradient-to-br from-blue-400 to-blue-500 text-white border-0 shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-blue-100 text-sm mb-2">Time Saved This Week</p>
+                    <p className="text-4xl font-bold">3 hrs 15 mins saved</p>
+                  </div>
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                    <Clock className="w-8 h-8" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className="shadow-md">
+              <CardContent className="p-4 space-y-3">
+                <Link to={createPageUrl('TeacherDashboard')}>
+                  <button className="w-full flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <Mail className="w-5 h-5 text-white" />
                       </div>
-                      <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-600 transition-colors" />
+                      <span className="font-medium text-slate-800">Draft Parent Message</span>
                     </div>
-                    <CardTitle className="text-xl">{link.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-600">{link.description}</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
-        </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400" />
+                  </button>
+                </Link>
 
-        {/* Stats Overview */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold text-slate-800 mb-6">System Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-gradient-to-br from-indigo-50 to-purple-50">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-indigo-600" />
+                <Link to={createPageUrl('PassDashboard')}>
+                  <button className="w-full flex items-center justify-between p-4 bg-orange-50 hover:bg-orange-100 rounded-xl transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                        <AlertCircle className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="font-medium text-slate-800">Log Incident</span>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400" />
+                  </button>
+                </Link>
+
+                <Link to={createPageUrl('TeacherDashboard')}>
+                  <button className="w-full flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <GraduationCap className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="font-medium text-slate-800">Grade Feedback Helper</span>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400" />
+                  </button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Interaction Log */}
+          <div className="space-y-6">
+            <Card className="shadow-md">
+              <CardHeader className="border-b bg-slate-50">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <MessageSquare className="w-5 h-5 text-slate-600" />
+                  Interaction Log
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 space-y-3">
+                <div className="p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <p className="text-sm font-medium text-slate-800">Apr 18 • Sent to: Mrs. Turner</p>
+                      <p className="text-xs text-slate-500">11:23 AM</p>
+                    </div>
                   </div>
-                  <h3 className="font-semibold text-slate-800">Real-Time Tracking</h3>
+                  <p className="text-sm text-slate-600">"Update on Jason's Focus Issues"</p>
                 </div>
-                <p className="text-sm text-slate-600">
-                  Monitor active passes with countdown timers and instant notifications
-                </p>
+
+                <div className="p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <p className="text-sm font-medium text-slate-800">Apr 12 • Sent to: Mr. Carter</p>
+                      <p className="text-xs text-slate-500">3:45 PM</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-600">"Behavior Concern Follow-Up"</p>
+                </div>
+
+                <div className="p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <p className="text-sm font-medium text-slate-800">Apr 8 • Sent to: Ms. Lee</p>
+                      <p className="text-xs text-slate-500">9:10 AM</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-600">"Project Deadline Reminder"</p>
+                </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-amber-50 to-orange-50">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-                    <Award className="w-5 h-5 text-amber-600" />
+            {/* Draft Message Preview */}
+            <Card className="shadow-md">
+              <CardHeader className="border-b bg-slate-50">
+                <CardTitle className="text-lg">Draft Message</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <Button size="sm" className="bg-blue-500 hover:bg-blue-600">Supportive</Button>
+                    <Button size="sm" variant="outline">Firm</Button>
+                    <Button size="sm" variant="outline">Admin-Safe</Button>
                   </div>
-                  <h3 className="font-semibold text-slate-800">PBIS Integration</h3>
-                </div>
-                <p className="text-sm text-slate-600">
-                  Incentivize responsible pass usage with points and rewards
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-blue-50 to-cyan-50">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <TrendingUp className="w-5 h-5 text-blue-600" />
+                  <div className="p-4 bg-slate-50 rounded-lg text-sm text-slate-700 space-y-2">
+                    <p className="font-medium">Hi Mrs. Turner,</p>
+                    <p>I wanted to inform you that Jason has been having difficulty staying focused in class recently.</p>
+                    <p>I'm here to help and we can work together to support him.</p>
+                    <p>Let me know if there's a good time we could chat further.</p>
+                    <p className="font-medium">Best regards,<br />Ms. Williams</p>
                   </div>
-                  <h3 className="font-semibold text-slate-800">Analytics & Reports</h3>
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1">Preview</Button>
+                    <Button className="flex-1 bg-blue-500 hover:bg-blue-600">
+                      <Send className="w-4 h-4 mr-2" />
+                      Send
+                    </Button>
+                  </div>
                 </div>
-                <p className="text-sm text-slate-600">
-                  Automated insights and monthly summaries for data-driven decisions
-                </p>
               </CardContent>
             </Card>
           </div>
