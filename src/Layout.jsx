@@ -16,11 +16,16 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  // Redirect based on role if no specific page
+  // Redirect based on role
   useEffect(() => {
-    if (user && !currentPageName) {
-      const targetPage = user.role === 'admin' ? 'Home' : 'StudentPass';
-      window.location.href = createPageUrl(targetPage);
+    if (user) {
+      // Always redirect based on role unless on a public page
+      if (!currentPageName || currentPageName === 'Home') {
+        const targetPage = user.role === 'admin' ? 'Home' : 'StudentPass';
+        if (currentPageName !== targetPage) {
+          window.location.href = createPageUrl(targetPage);
+        }
+      }
     }
   }, [user, currentPageName]);
 
