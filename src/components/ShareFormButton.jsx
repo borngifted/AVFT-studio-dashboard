@@ -47,7 +47,7 @@ export default function ShareFormButton() {
             <CardContent className="space-y-4">
               <div>
                 <p className="text-sm text-slate-600 mb-3">
-                  Share this link with students to fill out the AVTF Student Data Collection Form
+                  Share this link with students to fill out the Student Data Collection Form
                 </p>
                 <div className="flex gap-2">
                   <Input
