@@ -16,10 +16,11 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  // Redirect to Home if no specific page
+  // Redirect based on role if no specific page
   useEffect(() => {
     if (user && !currentPageName) {
-      window.location.href = createPageUrl('Home');
+      const targetPage = user.role === 'admin' ? 'Home' : 'StudentPass';
+      window.location.href = createPageUrl(targetPage);
     }
   }, [user, currentPageName]);
 
@@ -54,15 +55,17 @@ export default function Layout({ children, currentPageName }) {
 
   const isAdmin = user.role === 'admin';
 
-  const navigation = [
-    { name: 'Home', page: 'Home', icon: LayoutDashboard, adminOnly: false },
-    { name: 'Pass Dashboard', page: 'PassDashboard', icon: DoorOpen, adminOnly: false },
-    { name: 'Teacher Dashboard', page: 'TeacherDashboard', icon: Users, adminOnly: false },
-    { name: 'Analytics', page: 'PassAnalytics', icon: TrendingUp, adminOnly: false },
-    { name: 'Monthly Reports', page: 'MonthlyReports', icon: FileText, adminOnly: true },
+  const navigation = isAdmin ? [
+    { name: 'Home', page: 'Home', icon: LayoutDashboard },
+    { name: 'Pass Dashboard', page: 'PassDashboard', icon: DoorOpen },
+    { name: 'Teacher Dashboard', page: 'TeacherDashboard', icon: Users },
+    { name: 'Analytics', page: 'PassAnalytics', icon: TrendingUp },
+    { name: 'Monthly Reports', page: 'MonthlyReports', icon: FileText },
+  ] : [
+    { name: 'My Pass', page: 'StudentPass', icon: DoorOpen },
   ];
 
-  const visibleNav = navigation.filter(item => !item.adminOnly || isAdmin);
+  const visibleNav = navigation;
 
   return (
     <div className="min-h-screen bg-slate-50">

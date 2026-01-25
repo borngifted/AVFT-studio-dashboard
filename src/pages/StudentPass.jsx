@@ -234,7 +234,7 @@ export default function StudentPass() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">Digital Hall Pass</h1>
-            <p className="text-slate-500">AVTF Classroom</p>
+            <p className="text-slate-500">Teacher's Pet</p>
           </div>
           <Link to={createPageUrl('NotificationSettings')}>
             <Button variant="ghost" size="icon">

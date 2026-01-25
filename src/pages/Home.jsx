@@ -21,7 +21,7 @@ export default function Home() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="p-8 text-center">
-            <h1 className="text-2xl font-bold text-slate-800 mb-4">TeachersPet 🐾</h1>
+            <h1 className="text-2xl font-bold text-slate-800 mb-4">Teacher's Pet</h1>
             <p className="text-slate-500 mb-6">Please log in to continue</p>
             <Button onClick={() => base44.auth.redirectToLogin()}>
               Log In
