@@ -42,7 +42,7 @@ export default function Layout({ children, currentPageName }) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-slate-800 mb-4">TeachersPet 🐾</h1>
+          <h1 className="text-2xl font-bold text-slate-800 mb-4">Teacher's Pet</h1>
           <p className="text-slate-600 mb-6">Please log in to access your dashboard</p>
           <Button onClick={() => base44.auth.redirectToLogin()}>
             Log In
@@ -75,7 +75,7 @@ export default function Layout({ children, currentPageName }) {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center">
                   <FileText className="w-4 h-4 text-white" />
                 </div>
-                <span className="font-bold text-slate-800">TeachersPet 🐾</span>
+                <span className="font-bold text-slate-800">Teacher's Pet</span>
               </div>
 
               {/* Desktop Navigation */}
