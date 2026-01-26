@@ -3,7 +3,8 @@ import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
-  LayoutDashboard, FileText, DoorOpen, Users, LogOut, Menu, X, TrendingUp 
+  LayoutDashboard, FileText, DoorOpen, Users, LogOut, Menu, X, TrendingUp,
+  CheckCircle2, Trophy, BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import InstallPrompt from '@/components/InstallPrompt';
@@ -91,6 +92,9 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Monthly Reports', page: 'MonthlyReports', icon: FileText },
   ] : [
     { name: 'My Pass', page: 'StudentPass', icon: DoorOpen },
+    { name: 'Check In', page: 'AttendanceCheckIn', icon: CheckCircle2 },
+    { name: 'Leaderboard', page: 'Leaderboard', icon: Trophy },
+    { name: 'Curriculum', page: 'GAStandards', icon: BookOpen },
   ];
 
   const visibleNav = navigation;
