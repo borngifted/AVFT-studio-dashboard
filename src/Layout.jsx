@@ -7,13 +7,21 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import InstallPrompt from '@/components/InstallPrompt';
+import TeacherCodePrompt from '@/components/TeacherCodePrompt';
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showTeacherPrompt, setShowTeacherPrompt] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    base44.auth.me().then(u => {
+      setUser(u);
+      // Show teacher code prompt for new users (non-admins) on first login
+      if (u && u.role !== 'admin' && !localStorage.getItem('roleSelected')) {
+        setShowTeacherPrompt(true);
+      }
+    }).catch(() => {});
   }, []);
 
   // Redirect based on role
@@ -28,6 +36,21 @@ export default function Layout({ children, currentPageName }) {
       }
     }
   }, [user, currentPageName]);
+
+  // Show teacher code prompt
+  if (showTeacherPrompt) {
+    return (
+      <TeacherCodePrompt
+        onComplete={(isTeacher) => {
+          localStorage.setItem('roleSelected', 'true');
+          setShowTeacherPrompt(false);
+          if (isTeacher) {
+            window.location.reload(); // Reload to get updated user role
+          }
+        }}
+      />
+    );
+  }
 
   // Public pages that don't need auth
   const publicPages = ['StudentForm', 'StudentPass'];
